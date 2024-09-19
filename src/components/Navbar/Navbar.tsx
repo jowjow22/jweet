@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "../ui/separator";
+import { ThemeSwitcher } from "./ThemeSwitcher/ThemeSwitcher";
 
 export const Navbar = () => {
   const links = [
@@ -29,19 +30,19 @@ export const Navbar = () => {
   return (
     <Sheet>
       <nav className="flex items-center justify-between p-5">
-      <SheetTrigger>
+        <SheetTrigger>
           <Avatar className="h-8 w-8">
             <AvatarImage src="https://avatars.githubusercontent.com/u/51102351?s=400&v=4" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
-      </SheetTrigger>
-      <p className="text-md font-bold" >Jweet</p>
+        </SheetTrigger>
+
+        <p className="text-md font-bold">Jweet</p>
+        <ThemeSwitcher />
       </nav>
       <Separator />
       <SheetContent side="left">
-        <SheetHeader
-          className="flex flex-col items-center gap-y-2 p-4"
-        >
+        <SheetHeader className="flex flex-col items-center gap-y-2 p-4">
           <Avatar
             className={cn(
               "flex-shrink-0",
@@ -57,10 +58,10 @@ export const Navbar = () => {
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <SheetTitle>Jonata tweetar</SheetTitle>
-            <ul className="flex gap-x-2 text-sm font-thin">
-              <li>Seguidores: {0} </li>
-              <li>Seguindo: {0} </li>
-            </ul>
+          <ul className="flex gap-x-2 text-sm font-thin">
+            <li>Seguidores: {0} </li>
+            <li>Seguindo: {0} </li>
+          </ul>
         </SheetHeader>
         <ul className="flex flex-col gap-y-2">
           <ListRenderer
@@ -72,7 +73,10 @@ export const Navbar = () => {
         </ul>
         <Button
           variant="destructive"
-          className={cn("hover:scale-[1.02]", "transition-transform w-full mt-10")}
+          className={cn(
+            "hover:scale-[1.02]",
+            "transition-transform w-full mt-10"
+          )}
         >
           Sair
         </Button>

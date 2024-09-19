@@ -22,7 +22,7 @@ export const NavItem = ({ link }: NavItemProps) => {
       className={cn(
         buttonVariants({ variant: link.variant }),
         link.variant === "default" &&
-          "dark:bg-transparent dark:text-white dark:hover:bg-muted dark:hover:text-white",
+          "dark:bg-transparent dark:text-white dark:hover:bg-muted dark:hover:text-white bg-transparent text-black hover:bg-muted",
         "justify-start"
       )}
     >
