@@ -21,17 +21,17 @@ const basePostSchema = z.object({
   }),
   likes: z.number(),
   reposts: z.number(),
-  body: z.string(),
+  body: z.string().optional(),
   hasChildPost: z.boolean(),
   isRepost: z.boolean(),
 });
 
 type Post = z.infer<typeof basePostSchema> & {
-  repost: Post | null;
+  repost?: Post;
 };
 
 const postSchema: z.ZodType<Post> = basePostSchema.extend({
-  repost: z.lazy(() => z.union([postSchema, z.literal(null)])),
+  repost: z.lazy(() => postSchema).optional(),
 });
 
 interface IPostProps {
@@ -51,7 +51,7 @@ export const Post = ({ post }: IPostProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {post.hasChildPost && !post.isRepost ? (
+        {post.hasChildPost && !post.isRepost && post.repost ? (
           <>
             <CardDescription className="mb-2">{post.body}</CardDescription>
             <Post post={{ ...post.repost }} />
