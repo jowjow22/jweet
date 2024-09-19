@@ -1,6 +1,5 @@
 "use client"
 
-// Inspired by react-hot-toast library
 import * as React from "react"
 
 import type {
@@ -18,12 +17,12 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
-const actionTypes = {
+type actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
   DISMISS_TOAST: "DISMISS_TOAST",
   REMOVE_TOAST: "REMOVE_TOAST",
-} as const
+}
 
 let count = 0
 
@@ -32,7 +31,7 @@ function genId() {
   return count.toString()
 }
 
-type ActionType = typeof actionTypes
+type ActionType = actionTypes
 
 type Action =
   | {
