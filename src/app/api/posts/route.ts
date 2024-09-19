@@ -3,7 +3,7 @@ import { Post, postSchema } from "@/models/Post";
 
 const posts: Post[] = [];
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   return NextResponse.json(posts, { status: 200 });
 }
 
@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
         const newPost = postSchema.parse(data);
         posts.push(newPost);
         return NextResponse.json(newPost, { status: 201 });
-    } catch (_error) {
+    } catch (error) {
+        console.error(error);
         return NextResponse.json({ message: "Invalid request" }, { status: 400 });
     }
   
