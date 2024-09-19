@@ -1,4 +1,5 @@
 import { Button } from "../ui/button";
+import { useContext, useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,37 +11,56 @@ import {
 import { Heart, MessageCircle, Repeat } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Conditional } from "../utils/ConditionalRendering/ConditionalRendering";
-import { z } from "zod";
-import { PostForm } from "../PostForm/PostForm";
+
+import { PostForm as CommentForm } from "../PostForm/PostForm";
 import { Separator } from "../ui/separator";
 
-const basePostSchema = z.object({
-  user: z.object({
-    avatar: z.string(),
-    name: z.string(),
-  }),
-  likes: z.number(),
-  reposts: z.number(),
-  body: z.string().optional(),
-  hasChildPost: z.boolean(),
-  isRepost: z.boolean(),
-});
-
-type Post = z.infer<typeof basePostSchema> & {
-  repost?: Post;
-};
-
-const postSchema: z.ZodType<Post> = basePostSchema.extend({
-  repost: z.lazy(() => postSchema).optional(),
-});
+import { Post as PostType } from "@/models/Post";
+import { ListRenderer } from "../utils/ListRenderer/ListRenderer";
+import { PostsContext } from "@/contexts/PostsContext";
+import { cn } from "@/lib/utils";
 
 interface IPostProps {
-  post: Post;
+  post: PostType;
+  isComment?: boolean;
 }
 
-export const Post = ({ post }: IPostProps) => {
+export const Post = ({ post, isComment = false }: IPostProps) => {
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const { posts, setPosts } = useContext(PostsContext);
+
+  const currentPostIndex = posts.findIndex((p) => p.id === post.id);
+
+  const handleCommentSubmit = (comment: PostType) => {
+    const currentPost = posts[currentPostIndex];
+    if (!post.comments) {
+      currentPost.comments = [comment];
+    }
+
+    const postComment: PostType = {
+      ...comment,
+      user: {
+        avatar: "https://avatars.githubusercontent.com/u/51102351?s=400&v=4",
+        name: "Jonata",
+      },
+    };
+
+    currentPost.comments?.push(postComment);
+
+    const updatedPosts = [...posts];
+
+    updatedPosts[currentPostIndex] = currentPost;
+
+    setPosts(updatedPosts);
+  };
+
   return (
-    <Card className="w-full">
+    <Card
+      className={cn({
+        "w-full": true,
+        "mt-6": isComment,
+      })}
+    >
       <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
         <Avatar>
           <AvatarImage src="https://avatars.githubusercontent.com/u/51102351?s=400&v=4" />
@@ -60,9 +80,13 @@ export const Post = ({ post }: IPostProps) => {
           <CardDescription>{post.body}</CardDescription>
         )}
       </CardContent>
-      <Conditional condition={post.hasChildPost && !post.isRepost}>
+      <Conditional condition={!post.isRepost}>
         <Conditional.If>
-          <CardFooter className="flex flex-col items-end gap-x-4">
+          <CardFooter
+            className={cn({
+              "flex flex-col items-end gap-x-4": true,
+            })}
+          >
             <div className="flex gap-x-3">
               <Button variant="outline" size="icon">
                 <Heart className="h-4 w-4" />
@@ -70,14 +94,37 @@ export const Post = ({ post }: IPostProps) => {
               <Button variant="outline" size="icon">
                 <Repeat className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon">
-                <MessageCircle className="h-4 w-4" />
-              </Button>
+              <Conditional condition={!isComment}>
+                <Conditional.If>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setShowCommentForm(!showCommentForm)}
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                </Conditional.If>
+              </Conditional>
             </div>
-            <Separator className="mb-5 mt-5" />
-            <div className="w-11/12 self-center">
-              <PostForm />
-            </div>
+            <Conditional condition={showCommentForm}>
+              <Conditional.If>
+                <Separator className="mb-5 mt-5" />
+                <div className="w-11/12 self-center">
+                  <CommentForm submitHandler={handleCommentSubmit} />
+                </div>
+              </Conditional.If>
+            </Conditional>
+            {post.comments && post.comments.length > 0 ? (
+              <section className="mt-10 flex flex-col w-full">
+                <ListRenderer
+                  ChildComponent={Post}
+                  items={post.comments}
+                  keyValue="id"
+                  itemPropName="post"
+                  extraProps={{ isComment: true }}
+                />
+              </section>
+            ) : null}
           </CardFooter>
         </Conditional.If>
       </Conditional>

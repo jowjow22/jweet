@@ -3,8 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/Navbar/Navbar";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
@@ -34,13 +32,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class">
-          <main className="flex">
+          <main className="flex flex-col">
             <Navbar />
-            <Separator orientation="vertical" className={cn({
-              "h-screen": true,
-              "hidden": true,
-              "md:block": true,
-            })} />
             {children}
           </main>
           <Toaster />

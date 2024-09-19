@@ -1,20 +1,25 @@
-interface ListRendererProps<T, P extends object>{
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface ListRendererProps<T extends { [key: string]: any }, P extends object, K extends object>{
   itemPropName: string;
   items: T[];
   ChildComponent: React.ComponentType<P>
+  keyValue: string;
+  extraProps?: K;
 }
 
-export const ListRenderer = <T,P extends object>({
+export const ListRenderer = <T extends { [key: string]: any },P extends object, K extends object>({
   itemPropName,
   items,
   ChildComponent,
-}:ListRendererProps<T,P>) => {
+  keyValue,
+  extraProps,
+}:ListRendererProps<T,P, K>) => {
 
 
   return (
     <>
       {items.map((item, index) => (
-        <ChildComponent key={index}  {...{ [itemPropName]: item } as P} />
+        <ChildComponent key={keyValue ? item[keyValue] : index}  {...{ [itemPropName]: item } as P} {...extraProps as K} />
       ))}
     </>
   );
