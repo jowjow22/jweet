@@ -57,6 +57,13 @@
     --chart-5: 340 75% 55%
   }
 }
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 @layer base {
   * {
     @apply border-border;

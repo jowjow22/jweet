@@ -19,7 +19,7 @@ export const Navbar = () => {
   ];
 
   return (
-      <nav className="flex flex-col px-10 h-screen py-32 gap-y-10 min-w-72">
+      <nav className="hidden flex-col px-10 h-screen py-32 gap-y-10 min-w-72 md:flex">
         <div className="flex items-center justify-center flex-col">
           <Avatar
             className={cn(

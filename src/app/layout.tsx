@@ -38,6 +38,8 @@ export default function RootLayout({
             <Navbar />
             <Separator orientation="vertical" className={cn({
               "h-screen": true,
+              "hidden": true,
+              "md:block": true,
             })} />
             {children}
           </main>
