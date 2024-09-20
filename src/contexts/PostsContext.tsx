@@ -4,7 +4,7 @@ import { Post } from "@/models/Post";
 
 const PostsContext = createContext({
     posts: [] as Post[],
-    setPosts: (posts: Post[]) => {},
+    setPosts: (_posts: Post[]) => {},
 })
 
 export { PostsContext };

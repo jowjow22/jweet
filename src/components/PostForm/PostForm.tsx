@@ -28,7 +28,7 @@ const FormSchema = z.object({
     }),
 });
 
-export function PostForm({submitHandler}: {submitHandler: (data: Post) => void}) {
+export function PostForm({submitHandler}: {submitHandler: (_data: Post) => void}) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
