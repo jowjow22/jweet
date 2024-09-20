@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Post, postSchema } from "@/models/Post";
+import { main } from "@/app/api/database";
 
 const posts: Post[] = [];
 
 export async function GET() {
+  await main();
   return NextResponse.json(posts, { status: 200 });
 }
 
