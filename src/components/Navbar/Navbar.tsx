@@ -24,7 +24,7 @@ export const Navbar = () => {
       variant: "default",
       href: "/",
     },
-    { title: "Alterar dados", icon: Edit, variant: "default", href: "/inbox" },
+    { title: "Alterar dados", icon: Edit, variant: "default", href: "/user/update" },
   ];
 
   return (
