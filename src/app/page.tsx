@@ -1,37 +1,24 @@
-"use client";
+'use client'
 
 import { PostForm } from "@/components/PostForm/PostForm";
 import { Post } from "@/components/Post/Post";
 import { Post as PostType } from "@/models/Post";
-import { useEffect, useState } from "react";
 import { ListRenderer } from "@/components/utils/ListRenderer/ListRenderer";
-import { PostsContext } from "@/contexts/PostsContext";
-import { createPost, getPosts } from "@/services/posts";
+import { createPost } from "@/services/posts";
+import { usePostStore } from "@/providers/use-posts-store-provider";
 
 export default function Home() {
-  const [posts, setPosts] = useState<PostType[]>([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const posts = await getPosts();
-      setPosts(posts);
-    };
-
-    fetchPosts();
-  }, []);
+  const { posts, addNewPost } = usePostStore(
+    (state) => state,
+  );
 
   const submitHandler = async (post: PostType) => {
-    await createPost(post);
-    setPosts((prevPosts) => [post, ...prevPosts]);
+    const newPost = await createPost(post);
+    addNewPost(newPost);
   };
 
   return (
-    <PostsContext.Provider
-      value={{
-        posts,
-        setPosts,
-      }}
-    >
       <div className="w-full flex flex-col items-center py-10  px-5 md:px-44 gap-y-10">
         <PostForm submitHandler={submitHandler} />
         <ListRenderer
@@ -41,6 +28,5 @@ export default function Home() {
           itemPropName="post"
         />
       </div>
-    </PostsContext.Provider>
   );
 }

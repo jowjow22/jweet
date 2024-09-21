@@ -18,7 +18,7 @@ export const ListRenderer = <T extends { [key: string]: any },P extends object, 
 
   return (
     <>
-      {items.map((item, index) => (
+      {!!items.length && items.map((item, index) => (
         <ChildComponent key={keyValue ? item[keyValue] : index}  {...{ [itemPropName]: item } as P} {...extraProps as K} />
       ))}
     </>

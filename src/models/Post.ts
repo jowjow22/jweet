@@ -1,12 +1,12 @@
 import { z } from "zod";
+import { userSchema } from "./User";
+import { likeSchema } from "./Like";
+
 
 const basePostSchema = z.object({
   id: z.string(),
-  user: z.object({
-    avatar: z.string(),
-    name: z.string(),
-  }),
-  likes: z.number(),
+  user: z.lazy(() => userSchema),
+  likes: z.lazy(() => z.array(likeSchema)),
   reposts: z.number(),
   body: z.string().optional(),
   hasChildPost: z.boolean(),

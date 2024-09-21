@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { Toaster } from "@/components/ui/toaster";
+import { PostStoreProvider } from "@/providers/use-posts-store-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,7 +35,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class">
           <main className="flex flex-col">
             <Navbar />
-            {children}
+            <PostStoreProvider>{children}</PostStoreProvider>
           </main>
           <Toaster />
         </ThemeProvider>

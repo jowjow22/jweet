@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import { Separator } from "../ui/separator";
 
 import { Post as PostType } from "@/models/Post";
 import { ListRenderer } from "../utils/ListRenderer/ListRenderer";
-import { PostsContext } from "@/contexts/PostsContext";
+import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
 
 interface IPostProps {
@@ -27,7 +27,7 @@ interface IPostProps {
 
 export const Post = ({ post, isComment = false }: IPostProps) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const { posts, setPosts } = useContext(PostsContext);
+  const { posts } = usePostStore((state) => state);
 
   const currentPostIndex = posts.findIndex((p) => p.id === post.id);
 
@@ -41,7 +41,14 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
       ...comment,
       user: {
         avatar: "https://avatars.githubusercontent.com/u/51102351?s=400&v=4",
+        createdAt: new Date(),
         name: "Jonata",
+        email: "jonata@gmail.com",
+        id: "1",
+        updatedAt: new Date(),
+        username: "jonata",
+        likes: [],
+        posts: [],
       },
     };
 
@@ -50,8 +57,6 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
     const updatedPosts = [...posts];
 
     updatedPosts[currentPostIndex] = currentPost;
-
-    setPosts(updatedPosts);
   };
 
   return (

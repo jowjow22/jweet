@@ -1,19 +1,39 @@
 import { PrismaClient } from '@prisma/client'
+import { encrypt } from '@/utils/encrypt' 
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient().$extends({
+  query: {
+    user:{
+      async $allOperations({args, operation,query}){
+        if(operation === 'create'){
+          const encryptedPassword = await encrypt(args.data.password);
+          return query({
+            ...args,
+            data:{
+              ...args.data,
+              password: encryptedPassword
+            }
+          })
+        }
+        if(operation === 'update'){
+          if(args.data.password){
+            const passwordString = args.data.password as string;
+            const encryptedPassword = await encrypt(passwordString);
+            return query({
+              ...args,
+              data:{
+                ...args.data,
+                password: encryptedPassword
+              }
+            })
+          }
+        }
+        return query(args)
+      }
+    }
+  },
+})
+  
 
-export async function main() {  
-  console.log('Creating a new user')
-  const allUsers = await prisma.user.findMany()
-  console.log(allUsers)
-}
+export default prisma
 
-main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
