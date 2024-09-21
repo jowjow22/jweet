@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import database from "../database";
+import { prisma as database } from "../database";
 import { userSchema, baseUserCreationSchema } from "@/models/User";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
@@ -48,8 +48,7 @@ export async function GET() {
       id: true,
       email: true,
       name: true,
-      username: true,
-      avatar: true,
+      image: true,
       createdAt: true,
       updatedAt: true,
     },

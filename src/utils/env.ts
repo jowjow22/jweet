@@ -7,6 +7,8 @@ loadEnvConfig(projectDir)
 const envSchema = z.object({
   BCRYPT_SALT_ROUND: z.coerce.number().default(10),
   JWT_SECRET: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { postSchema } from "@/models/Post";
-import database  from "../database";
+import { prisma as database }  from "../database";
 import { ZodError } from "zod";
 
 export async function GET() {
