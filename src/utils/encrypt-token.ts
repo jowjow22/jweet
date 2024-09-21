@@ -2,7 +2,7 @@ import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 import { env } from './env'
  
-const secretKey = env.JWT_SECRET
+const secretKey = env.NEXTAUTH_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
  
 export async function encrypt(payload: {id: string}) {
@@ -21,6 +21,6 @@ export async function decrypt(session: string | undefined = '') {
     if (!payload) {
       throw new Error('Invalid session')
     }
-    
+
     return payload
 }
