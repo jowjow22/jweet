@@ -29,16 +29,6 @@ export const authOptions: AuthOptions = {
   ],
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    async signIn({ user }) {
-      if (user) {
-        await prisma.user.upsert({
-          where: { id: user.id },
-          update: user,
-          create: user,
-        });
-      }
-      return true;
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
