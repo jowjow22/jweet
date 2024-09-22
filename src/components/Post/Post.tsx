@@ -40,13 +40,12 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
     const postComment: PostType = {
       ...comment,
       user: {
-        avatar: "https://avatars.githubusercontent.com/u/51102351?s=400&v=4",
+        image: "https://avatars.githubusercontent.com/u/51102351?s=400&v=4",
         createdAt: new Date(),
         name: "Jonata",
         email: "jonata@gmail.com",
         id: "1",
         updatedAt: new Date(),
-        username: "jonata",
         likes: [],
         posts: [],
       },

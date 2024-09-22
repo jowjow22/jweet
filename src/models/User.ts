@@ -7,7 +7,7 @@ const baseUserCreationSchema = z.object({
   email: z.string(),
   name: z.string().nullable(),
   username: z.string(),
-  avatar: z.string().nullable(),
+  image: z.string().nullable(),
   password: z.string(),
 })
 
@@ -15,13 +15,12 @@ const baseUserSchema = z.object({
   id: z.string(),
   email: z.string(),
   name: z.string().nullable(),
-  username: z.string(),
-  avatar: z.string().nullable(),
+  image: z.string().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
 
-type User = z.infer<typeof baseUserSchema> & {
+export type User = z.infer<typeof baseUserSchema> & {
   posts?: Post[]
   likes?: Like[]
 }

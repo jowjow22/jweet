@@ -1,32 +1,35 @@
 'use client'
+import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
+import { CardContent, Card,CardDescription,CardFooter,CardHeader,CardTitle } from "@/components/ui/card";
+import Google from "@/assets/brands/google-icon.svg";
+import Image from 'next/image'
 
-import { PostForm } from "@/components/PostForm/PostForm";
-import { Post } from "@/components/Post/Post";
-import { Post as PostType } from "@/models/Post";
-import { ListRenderer } from "@/components/utils/ListRenderer/ListRenderer";
-import { createPost } from "@/services/posts";
-import { usePostStore } from "@/providers/use-posts-store-provider";
+const LoginButton = () => {
+  return (
+    <Button onClick={() => signIn("google", { callbackUrl: '/home' })}>
+      <Image src={Google} alt="Google Logo" width={24} height={24} className="mr-2" />
+      Sign in with Google
+    </Button>
+  )
+}
 
 export default function Home() {
-
-  const { posts, addNewPost } = usePostStore(
-    (state) => state,
-  );
-
-  const submitHandler = async (post: PostType) => {
-    const newPost = await createPost(post);
-    addNewPost(newPost);
-  };
-
   return (
-      <div className="w-full flex flex-col items-center py-10  px-5 md:px-44 gap-y-10">
-        <PostForm submitHandler={submitHandler} />
-        <ListRenderer
-          ChildComponent={Post}
-          items={posts}
-          keyValue="id"
-          itemPropName="post"
-        />
-      </div>
+    <div className="flex items-center justify-center h-screen">
+      <Card className="flex items-center flex-col">
+        <CardHeader>
+          <CardTitle>Bem vindo ao Jweet</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            Para continuar, faça login com sua conta Google
+          </CardDescription>
+        </CardContent>
+        <CardFooter>
+          <LoginButton />
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

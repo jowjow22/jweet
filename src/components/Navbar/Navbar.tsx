@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { ListRenderer } from "../utils/ListRenderer/ListRenderer";
 import { Home, Edit } from "lucide-react";
@@ -15,8 +15,14 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "../ui/separator";
 import { ThemeSwitcher } from "./ThemeSwitcher/ThemeSwitcher";
+import { User } from "@/models/User";
 
-export const Navbar = () => {
+interface NavbarProps {
+  user: User;
+}
+
+export const Navbar = ({ user }: NavbarProps) => {
+
   const links = [
     {
       title: "Home",
@@ -32,8 +38,10 @@ export const Navbar = () => {
       <nav className="flex items-center justify-between p-5">
         <SheetTrigger>
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://avatars.githubusercontent.com/u/51102351?s=400&v=4" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarImage src={user.image ?? ''} />
+            <AvatarFallback>{
+              user.name?.split(" ").map((name) => name[0]).join("")
+            }</AvatarFallback>
           </Avatar>
         </SheetTrigger>
 
@@ -51,13 +59,14 @@ export const Navbar = () => {
               "rounded-full",
               "bg-muted",
               "flex items-center justify-center",
-              "border-[1px] border-zinc-500"
             )}
           >
-            <AvatarImage src="https://avatars.githubusercontent.com/u/51102351?s=400&v=4" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarImage src={user.image ?? ''} />
+            <AvatarFallback>{
+              user.name?.split(" ").map((name) => name[0]).join("")
+            }</AvatarFallback>
           </Avatar>
-          <SheetTitle>Jonata tweetar</SheetTitle>
+          <SheetTitle>{user.name}</SheetTitle>
           <ul className="flex gap-x-2 text-sm font-thin">
             <li>Seguidores: {0} </li>
             <li>Seguindo: {0} </li>
