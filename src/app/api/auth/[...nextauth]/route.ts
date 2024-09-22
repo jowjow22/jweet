@@ -15,6 +15,7 @@ export const authOptions: AuthOptions = {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
+          allowDangerousEmailAccountLinking: true,
         },
       },
       profile(profile) {
@@ -29,6 +30,9 @@ export const authOptions: AuthOptions = {
   ],
   adapter: PrismaAdapter(prisma),
   callbacks: {
+    async signIn() {
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
