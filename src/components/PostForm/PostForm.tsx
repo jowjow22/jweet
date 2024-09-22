@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Post } from "@/models/Post"
+import { PostCreation } from "@/models/Post"
 import { useSession } from "next-auth/react";
+import { userForPost } from "@/models/User";
 
 const FormSchema = z.object({
   postBody: z
@@ -27,37 +28,24 @@ const FormSchema = z.object({
     }),
 });
 
-export function PostForm({submitHandler}: {submitHandler: (_data: Post) => void}) {
+export function PostForm({submitHandler}: {submitHandler: (_data: PostCreation) => void}) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
   const { toast } = useToast();
   const { data: session } = useSession();
 
-  const user = session?.user;
-  if (!user) {
+  if (!session?.user) {
     return null;
   }
+  
+  const user = userForPost.parse(session?.user);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const post: Post = {
-      id: Math.random().toString(36).substr(2, 9),
-      user: {
-        image: "https://avatars.githubusercontent.com/u/51102351?s=400&v=4",
-        createdAt: new Date(),
-        name: "Jonata",
-        email: "jonata@gmail.com",
-        id: "1",
-        updatedAt: new Date(),
-        likes: [],
-        posts: [],
-      },
-      likes: [],
-      reposts: 0,
-      body: data.postBody,
-      hasChildPost: false,
-      isRepost: false,
-      comments: [],
+    const post: PostCreation = {
+      user_id: user.id,
+      content: data.postBody,
+      child_post_id: null,
     };
     submitHandler(post);
     form.reset();

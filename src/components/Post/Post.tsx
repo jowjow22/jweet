@@ -16,7 +16,6 @@ import { PostForm as CommentForm } from "../PostForm/PostForm";
 import { Separator } from "../ui/separator";
 
 import { Post as PostType } from "@/models/Post";
-import { ListRenderer } from "../utils/ListRenderer/ListRenderer";
 import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
 
@@ -31,25 +30,13 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
 
   const currentPostIndex = posts.findIndex((p) => p.id === post.id);
 
-  const handleCommentSubmit = (comment: PostType) => {
+  const handleCommentSubmit = () => {
     const currentPost = posts[currentPostIndex];
     if (!post.comments) {
-      currentPost.comments = [comment];
+      currentPost.comments = [''];
     }
 
-    const postComment: PostType = {
-      ...comment,
-      user: {
-        image: "https://avatars.githubusercontent.com/u/51102351?s=400&v=4",
-        createdAt: new Date(),
-        name: "Jonata",
-        email: "jonata@gmail.com",
-        id: "1",
-        updatedAt: new Date(),
-        likes: [],
-        posts: [],
-      },
-    };
+    const postComment = ''
 
     currentPost.comments?.push(postComment);
 
@@ -67,7 +54,7 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
     >
       <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
         <Avatar>
-          <AvatarImage src="https://avatars.githubusercontent.com/u/51102351?s=400&v=4" />
+          <AvatarImage src={post.user.image ?? ''} />
           <AvatarFallback>JD</AvatarFallback>
         </Avatar>
         <CardTitle className="dark:hover:text-zinc-300 transition-all">
@@ -77,11 +64,11 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
       <CardContent>
         {post.hasChildPost && !post.isRepost && post.repost ? (
           <>
-            <CardDescription className="mb-2">{post.body}</CardDescription>
+            <CardDescription className="mb-2">{post.content}</CardDescription>
             <Post post={{ ...post.repost }} />
           </>
         ) : (
-          <CardDescription>{post.body}</CardDescription>
+          <CardDescription>{post.content}</CardDescription>
         )}
       </CardContent>
       <Conditional condition={!post.isRepost}>
@@ -118,7 +105,7 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
                 </div>
               </Conditional.If>
             </Conditional>
-            {post.comments && post.comments.length > 0 ? (
+{/*             {post.comments && post.comments.length > 0 ? (
               <section className="mt-10 flex flex-col w-full">
                 <ListRenderer
                   ChildComponent={Post}
@@ -128,7 +115,7 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
                   extraProps={{ isComment: true }}
                 />
               </section>
-            ) : null}
+            ) : null} */}
           </CardFooter>
         </Conditional.If>
       </Conditional>

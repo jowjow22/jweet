@@ -20,6 +20,12 @@ const baseUserSchema = z.object({
   updatedAt: z.date(),
 })
 
+export const userForPost = z.object({
+  id: z.string(),
+  name: z.string().nullable(),
+  image: z.string().nullable(),
+})
+
 export type User = z.infer<typeof baseUserSchema> & {
   posts?: Post[]
   likes?: Like[]

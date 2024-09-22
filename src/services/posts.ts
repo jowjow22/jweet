@@ -1,5 +1,5 @@
 import service from './axiosConfig'
-import { Post, postSchema } from '@/models/Post';
+import { PostCreation, postCreationSchema } from '@/models/Post';
 
 export const getPosts = async () => {
   try {
@@ -10,9 +10,9 @@ export const getPosts = async () => {
   }
 };
 
-export const createPost = async (post: Post) => {
+export const createPost = async (post: PostCreation) => {
   try {
-    const newPost = postSchema.parse(post);
+    const newPost = postCreationSchema.parse(post);
     const response = await service.post('/posts', newPost);
     return response.data;
   } catch (error) {
