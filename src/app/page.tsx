@@ -1,20 +1,11 @@
-'use client'
-import { Button } from "@/components/ui/button";
-import { signIn } from "next-auth/react";
 import { CardContent, Card,CardDescription,CardFooter,CardHeader,CardTitle } from "@/components/ui/card";
-import Google from "@/assets/brands/google-icon.svg";
-import Image from 'next/image'
+import { GoogleLoginButton as LoginButton } from "@/components/GoogleLoginButton";
+import { redirectIfAuthenticated } from '@/actions/actions'
 
-const LoginButton = () => {
-  return (
-    <Button onClick={() => signIn("google", { callbackUrl: '/home' })}>
-      <Image src={Google} alt="Google Logo" width={24} height={24} className="mr-2" />
-      Sign in with Google
-    </Button>
-  )
-}
 
-export default function Home() {
+export default async function Home() {
+  await redirectIfAuthenticated()
+
   return (
     <div className="flex items-center justify-center h-screen">
       <Card className="flex items-center flex-col">
