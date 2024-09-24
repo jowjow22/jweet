@@ -8,6 +8,22 @@ export async function GET(
   const { userId } = params;
   const posts = await database.post.findMany({
     include: {
+      childPost: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
+      },
       user: {
         select: {
           id: true,

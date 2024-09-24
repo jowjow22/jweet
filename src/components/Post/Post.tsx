@@ -25,9 +25,10 @@ import { userForPost } from "@/models/User";
 interface IPostProps {
   post: PostType;
   isComment?: boolean;
+  isChildPost?: boolean;
 }
 
-export const Post = ({ post, isComment = false }: IPostProps) => {
+export const Post = ({ post, isComment = false, isChildPost = false }: IPostProps) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
   const { posts, updatePostLikes } = usePostStore((state) => state);
   const { data: session } = useSession();
@@ -49,7 +50,7 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
     updatedPosts[currentPostIndex] = currentPost;
   };
 
-  const { likes } = post._count;
+  const { likes } = post._count ?? 0;
 
   const [liked, setLiked] = useState(post.liked);
 
@@ -88,16 +89,16 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {post.hasChildPost && !post.isRepost && post.repost ? (
+        {post.childPostId && post.childPost ? (
           <>
-            <CardDescription className="mb-2">{post.content}</CardDescription>
-            <Post post={{ ...post.repost }} />
+            <CardDescription className="mb-4">{post.content}</CardDescription>
+            <Post post={{ ...post.childPost }} isChildPost={true} />
           </>
         ) : (
           <CardDescription>{post.content}</CardDescription>
         )}
       </CardContent>
-      <Conditional condition={!post.isRepost}>
+      <Conditional condition={!isChildPost}>
         <Conditional.If>
           <CardFooter
             className={cn({

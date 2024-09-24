@@ -22,6 +22,7 @@ export default function Home() {
 
   const fetchPosts = async () => {
     const posts = await getPosts();
+    console.log(posts);
     setPosts(posts);
   }
 

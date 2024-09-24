@@ -8,7 +8,7 @@ const basePostSchema = z.object({
   user: z.lazy(() => userSchema),
   likes: z.lazy(() => z.array(likeSchema)),
   content: z.string().optional(),
-  hasChildPost: z.boolean().optional(),
+  childPostId: z.string().optional(),
   isRepost: z.boolean().optional(),
   comments: z.array(z.string()).optional(),
   _count: z.object({
@@ -24,13 +24,13 @@ export const postCreationSchema = z.object({
 });
 
 type Post = z.infer<typeof basePostSchema> & {
-  repost?: Post;
+  childPost?: Post;
 };
 
 type PostCreation = z.infer<typeof postCreationSchema>;
 
 const postSchema: z.ZodType<Post> = basePostSchema.extend({
-  repost: z.lazy(() => postSchema).optional(),
+  childPost: z.lazy(() => postSchema).optional(),
 });
 
 export { postSchema };
