@@ -2,7 +2,7 @@
 
 import { PostForm } from "@/components/PostForm/PostForm";
 import { Post } from "@/components/Post/Post";
-import { PostCreation as PostType } from "@/models/Post";
+import { postSchema, PostCreation as PostType } from "@/models/Post";
 import { ListRenderer } from "@/components/utils/ListRenderer/ListRenderer";
 import { createPost, getPosts } from "@/services/posts";
 import { usePostStore } from "@/providers/use-posts-store-provider";
@@ -16,7 +16,8 @@ export default function Home() {
 
   const submitHandler = async (post: PostType) => {
     const newPost = await createPost(post);
-    addNewPost(newPost);
+    const returnedPost = postSchema.parse(newPost);
+    addNewPost(returnedPost);
   };
 
   const fetchPosts = async () => {

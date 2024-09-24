@@ -7,10 +7,9 @@ const basePostSchema = z.object({
   id: z.string(),
   user: z.lazy(() => userSchema),
   likes: z.lazy(() => z.array(likeSchema)),
-  reposts: z.number(),
   content: z.string().optional(),
-  hasChildPost: z.boolean(),
-  isRepost: z.boolean(),
+  hasChildPost: z.boolean().optional(),
+  isRepost: z.boolean().optional(),
   comments: z.array(z.string()).optional(),
   _count: z.object({
     likes: z.number(),

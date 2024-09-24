@@ -24,7 +24,7 @@ export const createPostStore = (
     ...initState,
     addNewPost: (_post: Post) =>{
       set((state) => ({
-        posts: [...state.posts, _post],
+        posts: [_post,...state.posts],
       }))},
     setPosts: (_posts: Post[]) => {
       set((state) => ({

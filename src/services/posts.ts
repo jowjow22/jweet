@@ -39,13 +39,3 @@ export const removeLike = async (userId: string, postId: string) => {
     console.error(error);
   }
 }
-
-export const verifyUserLikedPost = async (userId: string, postId: string) => {
-  try {
-    const response = await service.get(`/posts/${userId}/like/${postId}`);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
-}

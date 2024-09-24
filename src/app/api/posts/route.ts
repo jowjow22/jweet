@@ -27,13 +27,8 @@ export async function POST(req: NextRequest) {
         },
       },
       include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
+        user: true,
+        likes: true,
         _count: {
           select: {
             likes: true,
@@ -41,6 +36,8 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+    
+    Object.assign(post, { liked: false });
 
     return NextResponse.json(post, { status: 201 });
   } catch (error) {

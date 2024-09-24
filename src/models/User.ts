@@ -16,8 +16,8 @@ const baseUserSchema = z.object({
   email: z.string(),
   name: z.string().nullable(),
   image: z.string().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.union([z.string(), z.date()]).optional(),
+  updatedAt: z.union([z.string(), z.date()]).optional(),
 })
 
 export const userForPost = z.object({
