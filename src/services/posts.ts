@@ -19,3 +19,31 @@ export const createPost = async (post: PostCreation) => {
     console.error(error);
   }
 };
+
+export const addLike = async (userId: string, postId: string) => {
+  try {
+    const response = await service.post(`/posts/${userId}/like/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const removeLike = async (userId: string, postId: string) => { 
+  try {
+    const response = await service.delete(`/posts/${userId}/like/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const verifyUserLikedPost = async (userId: string, postId: string) => {
+  try {
+    const response = await service.get(`/posts/${userId}/like/${postId}`);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}

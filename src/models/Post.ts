@@ -12,6 +12,9 @@ const basePostSchema = z.object({
   hasChildPost: z.boolean(),
   isRepost: z.boolean(),
   comments: z.array(z.string()).optional(),
+  _count: z.object({
+    likes: z.number(),
+  }),
 });
 
 export const postCreationSchema = z.object({

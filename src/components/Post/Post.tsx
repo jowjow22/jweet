@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,6 +18,9 @@ import { Separator } from "../ui/separator";
 import { Post as PostType } from "@/models/Post";
 import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
+import { addLike, verifyUserLikedPost, removeLike } from "@/services/posts";
+import { useSession } from "next-auth/react";
+import { userForPost } from "@/models/User";
 
 interface IPostProps {
   post: PostType;
@@ -26,23 +29,57 @@ interface IPostProps {
 
 export const Post = ({ post, isComment = false }: IPostProps) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const { posts } = usePostStore((state) => state);
+  const { posts, updatePostLikes } = usePostStore((state) => state);
+  const { data: session } = useSession();
 
   const currentPostIndex = posts.findIndex((p) => p.id === post.id);
 
   const handleCommentSubmit = () => {
     const currentPost = posts[currentPostIndex];
     if (!post.comments) {
-      currentPost.comments = [''];
+      currentPost.comments = [""];
     }
 
-    const postComment = ''
+    const postComment = "";
 
     currentPost.comments?.push(postComment);
 
     const updatedPosts = [...posts];
 
     updatedPosts[currentPostIndex] = currentPost;
+  };
+
+  const { likes } = post._count;
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    if (!session) return;
+
+    const user = userForPost.parse(session?.user);
+
+    const verifyUserLiked = async () => {
+      setLiked(await verifyUserLikedPost(user.id, post.id));
+    };
+
+    verifyUserLiked();
+  }, [session]);
+
+  if (!session) {
+    return null;
+  }
+
+  const user = userForPost.parse(session?.user);
+
+  const handleLikeClick = async () => {
+    if (liked) {
+      await removeLike(user.id, post.id);
+      setLiked(false);
+      updatePostLikes(post.id, false);
+      return;
+    }
+    await addLike(user.id, post.id);
+    setLiked(true);
+    updatePostLikes(post.id, true);
   };
 
   return (
@@ -54,7 +91,7 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
     >
       <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
         <Avatar>
-          <AvatarImage src={post.user.image ?? ''} />
+          <AvatarImage src={post.user.image ?? ""} />
           <AvatarFallback>JD</AvatarFallback>
         </Avatar>
         <CardTitle className="dark:hover:text-zinc-300 transition-all">
@@ -79,8 +116,13 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
             })}
           >
             <div className="flex gap-x-3">
-              <Button variant="outline" size="icon">
-                <Heart className="h-4 w-4" />
+              <Button variant="outline" onClick={handleLikeClick}>
+                <Heart className={cn({
+                  "h-4 w-4 mr-2": true,
+                  "text-red-500": liked,
+                  "fill-current": liked,
+                })} />
+                {likes}
               </Button>
               <Button variant="outline" size="icon">
                 <Repeat className="h-4 w-4" />
@@ -105,7 +147,7 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
                 </div>
               </Conditional.If>
             </Conditional>
-{/*             {post.comments && post.comments.length > 0 ? (
+            {/*             {post.comments && post.comments.length > 0 ? (
               <section className="mt-10 flex flex-col w-full">
                 <ListRenderer
                   ChildComponent={Post}
