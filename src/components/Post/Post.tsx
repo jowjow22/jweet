@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,7 +18,7 @@ import { Separator } from "../ui/separator";
 import { Post as PostType } from "@/models/Post";
 import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
-import { addLike, verifyUserLikedPost, removeLike } from "@/services/posts";
+import { addLike, removeLike } from "@/services/posts";
 import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
 
@@ -50,19 +50,8 @@ export const Post = ({ post, isComment = false }: IPostProps) => {
   };
 
   const { likes } = post._count;
-  const [liked, setLiked] = useState(false);
 
-  useEffect(() => {
-    if (!session) return;
-
-    const user = userForPost.parse(session?.user);
-
-    const verifyUserLiked = async () => {
-      setLiked(await verifyUserLikedPost(user.id, post.id));
-    };
-
-    verifyUserLiked();
-  }, [session]);
+  const [liked, setLiked] = useState(post.liked);
 
   if (!session) {
     return null;

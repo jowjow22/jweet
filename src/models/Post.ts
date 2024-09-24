@@ -15,6 +15,7 @@ const basePostSchema = z.object({
   _count: z.object({
     likes: z.number(),
   }),
+  liked: z.boolean().optional(),
 });
 
 export const postCreationSchema = z.object({

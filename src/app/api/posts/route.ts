@@ -3,30 +3,6 @@ import { postCreationSchema } from "@/models/Post";
 import { prisma as database }  from "../database";
 import { ZodError } from "zod";
 
-export async function GET() {
-  const posts = await database.post.findMany({
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-      _count: {
-        select: {
-          likes: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  return NextResponse.json(posts, { status: 200 });
-}
-
 export async function POST(req: NextRequest) {
   if (!req.body) {
     return NextResponse.json({ message: "Invalid request" }, { status: 400 });
@@ -56,6 +32,11 @@ export async function POST(req: NextRequest) {
             id: true,
             name: true,
             image: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
           },
         },
       },

@@ -1,9 +1,11 @@
 import service from './axiosConfig'
 import { PostCreation, postCreationSchema } from '@/models/Post';
+import { getUserSession } from '@/actions/actions';
 
 export const getPosts = async () => {
   try {
-    const response = await service.get('/posts');
+    const user = await getUserSession();
+    const response = await service.get('/posts/'+user.id);
     return response.data;
   } catch (error) {
     console.error(error);
