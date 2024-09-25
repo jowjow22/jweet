@@ -29,7 +29,17 @@ export async function POST(req: NextRequest) {
       include: {
         user: true,
         likes: true,
-        childPost: true,
+        childPost: {
+          include: {
+            user: true,
+            likes: true,
+            _count: {
+              select: {
+                likes: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             likes: true,

@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,12 +15,21 @@ import { Conditional } from "../utils/ConditionalRendering/ConditionalRendering"
 import { PostForm as CommentForm } from "../PostForm/PostForm";
 import { Separator } from "../ui/separator";
 
-import { Post as PostType } from "@/models/Post";
+import { postSchema, Post as PostType, PostCreation as PostCreationType } from "@/models/Post";
 import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
-import { addLike, removeLike } from "@/services/posts";
+import { addLike, createPost, removeLike } from "@/services/posts";
 import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
+import { PostForm } from "../PostForm/PostForm";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface IPostProps {
   post: PostType;
@@ -28,26 +37,22 @@ interface IPostProps {
   isChildPost?: boolean;
 }
 
-export const Post = ({ post, isComment = false, isChildPost = false }: IPostProps) => {
+export const Post = ({
+  post,
+  isComment = false,
+  isChildPost = false,
+}: IPostProps) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const { posts, updatePostLikes } = usePostStore((state) => state);
+  const { updatePostLikes, addNewPost } = usePostStore((state) => state);
+  const [repostModalOpen, setRepostModalOpen] = useState(false);
   const { data: session } = useSession();
 
-  const currentPostIndex = posts.findIndex((p) => p.id === post.id);
+  const submitHandler = async (repost: PostCreationType) => {
+    const newPost = await createPost(repost);
 
-  const handleCommentSubmit = () => {
-    const currentPost = posts[currentPostIndex];
-    if (!post.comments) {
-      currentPost.comments = [""];
-    }
-
-    const postComment = "";
-
-    currentPost.comments?.push(postComment);
-
-    const updatedPosts = [...posts];
-
-    updatedPosts[currentPostIndex] = currentPost;
+    const returnedPost = postSchema.parse(newPost);
+    addNewPost(returnedPost);
+    setRepostModalOpen(false);
   };
 
   const { likes } = post._count ?? 0;
@@ -107,16 +112,29 @@ export const Post = ({ post, isComment = false, isChildPost = false }: IPostProp
           >
             <div className="flex gap-x-3">
               <Button variant="outline" onClick={handleLikeClick}>
-                <Heart className={cn({
-                  "h-4 w-4 mr-2": true,
-                  "text-red-500": liked,
-                  "fill-current": liked,
-                })} />
+                <Heart
+                  className={cn({
+                    "h-4 w-4 mr-2": true,
+                    "text-red-500": liked,
+                    "fill-current": liked,
+                  })}
+                />
                 {likes}
               </Button>
-              <Button variant="outline" size="icon">
-                <Repeat className="h-4 w-4" />
-              </Button>
+              <Dialog open={repostModalOpen}>
+                <DialogTrigger asChild onClick={() => setRepostModalOpen(true)}>
+                  <Button variant="outline" size="icon">
+                    <Repeat className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>Repostar</DialogTitle>
+                  <DialogDescription>
+                    Você deseja repostar esse post?
+                  </DialogDescription>
+                  <PostForm postForRepost={post} submitHandler={submitHandler} />
+                </DialogContent>
+              </Dialog>
               <Conditional condition={!isComment}>
                 <Conditional.If>
                   <Button
@@ -133,7 +151,7 @@ export const Post = ({ post, isComment = false, isChildPost = false }: IPostProp
               <Conditional.If>
                 <Separator className="mb-5 mt-5" />
                 <div className="w-11/12 self-center">
-                  <CommentForm submitHandler={handleCommentSubmit} />
+                  <CommentForm submitHandler={() => console.log('comment')} />
                 </div>
               </Conditional.If>
             </Conditional>
