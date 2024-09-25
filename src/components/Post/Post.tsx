@@ -15,7 +15,11 @@ import { Conditional } from "../utils/ConditionalRendering/ConditionalRendering"
 import { PostForm as CommentForm } from "../PostForm/PostForm";
 import { Separator } from "../ui/separator";
 
-import { postSchema, Post as PostType, PostCreation as PostCreationType } from "@/models/Post";
+import {
+  postSchema,
+  Post as PostType,
+  PostCreation as PostCreationType,
+} from "@/models/Post";
 import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
 import { addLike, createPost, removeLike } from "@/services/posts";
@@ -47,7 +51,7 @@ export const Post = ({
   const { updatePostLikes, addNewPost } = usePostStore((state) => state);
   const [repostModalOpen, setRepostModalOpen] = useState(false);
   const { data: session } = useSession();
-  const {push} = useRouter();
+  const { push } = useRouter();
 
   const submitHandler = async (repost: PostCreationType) => {
     const newPost = await createPost(repost);
@@ -85,7 +89,6 @@ export const Post = ({
         "w-full": true,
         "mt-6": isComment,
       })}
-      onClick={() => push(`/home/${post.id}`)}
     >
       <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
         <Avatar>
@@ -96,7 +99,7 @@ export const Post = ({
           {post.user.name}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent onClick={() => push(`/home/${post.id}`)}>
         {post.childPostId && post.childPost ? (
           <div onClick={() => push(`/home/${post.childPostId}`)}>
             <CardDescription className="mb-4">{post.content}</CardDescription>
@@ -135,7 +138,10 @@ export const Post = ({
                   <DialogDescription>
                     Você deseja repostar esse post?
                   </DialogDescription>
-                  <PostForm postForRepost={post} submitHandler={submitHandler} />
+                  <PostForm
+                    postForRepost={post}
+                    submitHandler={submitHandler}
+                  />
                 </DialogContent>
               </Dialog>
               <Conditional condition={!isComment}>
@@ -154,7 +160,7 @@ export const Post = ({
               <Conditional.If>
                 <Separator className="mb-5 mt-5" />
                 <div className="w-11/12 self-center">
-                  <CommentForm submitHandler={() => console.log('comment')} />
+                  <CommentForm submitHandler={() => console.log("comment")} />
                 </div>
               </Conditional.If>
             </Conditional>
