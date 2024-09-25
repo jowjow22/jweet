@@ -127,7 +127,7 @@ export const Post = ({
                 />
                 {likes}
               </Button>
-              <Dialog open={repostModalOpen}>
+              <Dialog open={repostModalOpen} onOpenChange={setRepostModalOpen}>
                 <DialogTrigger asChild onClick={() => setRepostModalOpen(true)}>
                   <Button variant="outline" size="icon">
                     <Repeat className="h-4 w-4" />

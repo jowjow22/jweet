@@ -88,9 +88,6 @@ export function PostForm({
             </Avatar>
             Jweet
           </FormLabel>
-          <FormDescription>
-            {postForRepost ? "" : "O que você está pensando?"}
-          </FormDescription>
         </div>
         <FormField
           control={form.control}
