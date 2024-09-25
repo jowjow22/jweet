@@ -99,13 +99,14 @@ export const Post = ({
           {post.user.name}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            push(`/home/${post.id}`);
-          }}
-        >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          push(`/home/${post.id}`);
+        }}
+        className="cursor-pointer hover:bg-muted dark:hover:bg-zinc-800"
+      >
+        <CardContent>
           {post.childPostId && post.childPost ? (
             <>
               <CardDescription className="mb-4">{post.content}</CardDescription>
@@ -121,8 +122,8 @@ export const Post = ({
           ) : (
             <CardDescription>{post.content}</CardDescription>
           )}
-        </div>
-      </CardContent>
+        </CardContent>
+      </div>
       <Conditional condition={!isChildPost}>
         <Conditional.If>
           <CardFooter
