@@ -101,7 +101,12 @@ export const Post = ({
       </CardHeader>
       <CardContent onClick={() => push(`/home/${post.id}`)}>
         {post.childPostId && post.childPost ? (
-          <div onClick={() => push(`/home/${post.childPostId}`)}>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              push(`/home/${post.childPostId}`);
+            }}
+          >
             <CardDescription className="mb-4">{post.content}</CardDescription>
             <Post post={{ ...post.childPost }} isChildPost={true} />
           </div>
