@@ -3,7 +3,8 @@ import { PostStoreProvider } from "@/providers/use-posts-store-provider";
 import Link from "next/link";
 import { verifySession } from "../../actions/actions";
 import { userSchema } from "@/models/User";
-
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 export default async function HomeLayout({
   children,
 }: Readonly<{
@@ -12,9 +13,14 @@ export default async function HomeLayout({
   const session = await verifySession();
   if (!session) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen flex-col gap-y-2">
         <p className="text-2xl">You need to be signed in to view this page</p>
-        <Link href="/login" className="text-blue-500">
+        
+        <Link href="/" className={cn(
+        buttonVariants({variant: "default"}),
+          "dark:bg-transparent dark:text-white dark:hover:bg-muted dark:hover:text-white bg-transparent text-black hover:bg-muted",
+        "justify-start"
+      )}>
           Sign in
         </Link>
       </div>
