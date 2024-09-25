@@ -24,7 +24,7 @@ export const postCreationSchema = z.object({
 });
 
 type Post = z.infer<typeof basePostSchema> & {
-  childPost?: Post;
+  childPost?: Post | null;
 };
 
 type PostCreation = z.infer<typeof postCreationSchema>;

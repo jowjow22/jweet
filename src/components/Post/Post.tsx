@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -22,6 +22,7 @@ import { addLike, createPost, removeLike } from "@/services/posts";
 import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
 import { PostForm } from "../PostForm/PostForm";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -46,6 +47,7 @@ export const Post = ({
   const { updatePostLikes, addNewPost } = usePostStore((state) => state);
   const [repostModalOpen, setRepostModalOpen] = useState(false);
   const { data: session } = useSession();
+  const {push} = useRouter();
 
   const submitHandler = async (repost: PostCreationType) => {
     const newPost = await createPost(repost);
@@ -83,6 +85,7 @@ export const Post = ({
         "w-full": true,
         "mt-6": isComment,
       })}
+      onClick={() => push(`/home/${post.id}`)}
     >
       <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
         <Avatar>
@@ -95,10 +98,10 @@ export const Post = ({
       </CardHeader>
       <CardContent>
         {post.childPostId && post.childPost ? (
-          <>
+          <div onClick={() => push(`/home/${post.childPostId}`)}>
             <CardDescription className="mb-4">{post.content}</CardDescription>
             <Post post={{ ...post.childPost }} isChildPost={true} />
-          </>
+          </div>
         ) : (
           <CardDescription>{post.content}</CardDescription>
         )}

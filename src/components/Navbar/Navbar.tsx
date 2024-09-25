@@ -16,6 +16,7 @@ import {
 import { Separator } from "../ui/separator";
 import { ThemeSwitcher } from "./ThemeSwitcher/ThemeSwitcher";
 import { User } from "@/models/User";
+import Link from "next/link";
 
 interface NavbarProps {
   user: User;
@@ -45,7 +46,7 @@ export const Navbar = ({ user }: NavbarProps) => {
           </Avatar>
         </SheetTrigger>
 
-        <p className="text-md font-bold">Jweet</p>
+        <Link href="/home" className="text-md font-bold">Jweet</Link>
         <ThemeSwitcher />
       </nav>
       <Separator />

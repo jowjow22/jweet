@@ -6,7 +6,7 @@ import { postSchema, PostCreation as PostType } from "@/models/Post";
 import { ListRenderer } from "@/components/utils/ListRenderer/ListRenderer";
 import { createPost, getPosts } from "@/services/posts";
 import { usePostStore } from "@/providers/use-posts-store-provider";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 export default function Home() {
 
@@ -20,15 +20,15 @@ export default function Home() {
     addNewPost(returnedPost);
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     const posts = await getPosts();
     console.log(posts);
     setPosts(posts);
-  }
+  }, [setPosts]);
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]);
 
   return (
       <div className="w-full flex flex-col items-center py-10  px-5 md:px-44 gap-y-10">

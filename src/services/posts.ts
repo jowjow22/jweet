@@ -12,6 +12,16 @@ export const getPosts = async () => {
   }
 };
 
+export const getPostById = async (postId: string) => {
+  try {
+    const user = await getUserSession();
+    const response = await service.get(`/posts/${user.id}/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const createPost = async (post: PostCreation) => {
   try {
     const newPost = postCreationSchema.parse(post);
