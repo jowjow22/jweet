@@ -8,33 +8,23 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Heart, MessageCircle, Repeat } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Conditional } from "../utils/ConditionalRendering/ConditionalRendering";
 
 import { PostForm as CommentForm } from "../PostForm/PostForm";
 import { Separator } from "../ui/separator";
 
-import {
-  postSchema,
-  Post as PostType,
-  PostCreation as PostCreationType,
-} from "@/models/Post";
+import { Post as PostType } from "@/models/Post";
 import { usePostStore } from "@/providers/use-posts-store-provider";
 import { cn } from "@/lib/utils";
-import { addLike, createPost, removeLike } from "@/services/posts";
+import { addLike, removeLike } from "@/services/posts";
 import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
-import { PostForm } from "../PostForm/PostForm";
 import { useRouter } from "next/navigation";
+import { RepostMenu } from "./components/RepostMenu";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Repeat } from "lucide-react";
 
 interface IPostProps {
   post: PostType;
@@ -48,19 +38,9 @@ export const Post = ({
   isChildPost = false,
 }: IPostProps) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const { updatePostLikes, addNewPost } = usePostStore((state) => state);
-  const [repostModalOpen, setRepostModalOpen] = useState(false);
   const { data: session } = useSession();
   const { push } = useRouter();
-
-  const submitHandler = async (repost: PostCreationType) => {
-    const newPost = await createPost(repost);
-
-    const returnedPost = postSchema.parse(newPost);
-    addNewPost(returnedPost);
-    setRepostModalOpen(false);
-  };
-
+  const { updatePostLikes } = usePostStore((state) => state);
   const { likes } = post._count ?? 0;
 
   const [liked, setLiked] = useState(post.liked);
@@ -88,25 +68,41 @@ export const Post = ({
       className={cn({
         "w-full": true,
         "mt-6": isComment,
+        "border-none shadow-none": !post.content,
       })}
     >
-      <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
-        <Avatar>
-          <AvatarImage src={post.user.image ?? ""} />
-          <AvatarFallback>JD</AvatarFallback>
-        </Avatar>
-        <CardTitle className="dark:hover:text-zinc-300 transition-all">
-          {post.user.name}
-        </CardTitle>
-      </CardHeader>
+      <Conditional condition={!!post.content}>
+        <Conditional.If>
+          <CardHeader className="flex flex-row gap-x-3 items-start cursor-pointer">
+            <Avatar>
+              <AvatarImage src={post.user.image ?? ""} />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <CardTitle className="dark:hover:text-zinc-300 transition-all">
+              {post.user.name}
+            </CardTitle>
+          </CardHeader>
+        </Conditional.If>
+        <Conditional.Else>
+          <CardHeader className="flex flex-row gap-x items-start cursor-pointer p-0">
+            <CardTitle className="dark:hover:text-zinc-300 transition-all flex items-center gap-x-2 text-sm text-gray-500">
+              <Repeat className="h-4 w-4" /> {post.user.name}
+            </CardTitle>
+          </CardHeader>
+        </Conditional.Else>
+      </Conditional>
       <div
         onClick={(e) => {
           e.stopPropagation();
           push(`/home/${post.id}`);
         }}
-        className="cursor-pointer hover:bg-muted dark:hover:bg-zinc-800"
+        className="cursor-pointer"
       >
-        <CardContent>
+        <CardContent className={
+          cn({
+            "px-0": !post.content,
+          })
+        }>
           {post.childPostId && post.childPost ? (
             <>
               <CardDescription className="mb-4">{post.content}</CardDescription>
@@ -129,6 +125,7 @@ export const Post = ({
           <CardFooter
             className={cn({
               "flex flex-col items-end gap-x-4": true,
+              "px-0": !post.content,
             })}
           >
             <div className="flex gap-x-3">
@@ -142,23 +139,7 @@ export const Post = ({
                 />
                 {likes}
               </Button>
-              <Dialog open={repostModalOpen} onOpenChange={setRepostModalOpen}>
-                <DialogTrigger asChild onClick={() => setRepostModalOpen(true)}>
-                  <Button variant="outline" size="icon">
-                    <Repeat className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogTitle>Repostar</DialogTitle>
-                  <DialogDescription>
-                    Você deseja repostar esse post?
-                  </DialogDescription>
-                  <PostForm
-                    postForRepost={post}
-                    submitHandler={submitHandler}
-                  />
-                </DialogContent>
-              </Dialog>
+              <RepostMenu post={post} />
               <Conditional condition={!isComment}>
                 <Conditional.If>
                   <Button

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma as database } from "../../../database";
-
 export async function GET(
   _req: NextRequest,
   { params }: { params: { userId: string, postId: string } }
@@ -57,4 +56,32 @@ export async function GET(
   }
 
   return NextResponse.json({ message: "Post not found" }, { status: 404 });
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: { userId: string, postId: string } }
+) {
+  const { userId, postId } = params;
+  const post = await database.post.findFirst({
+    where: {
+      id: postId
+    }
+  });
+
+  if (post === null) {
+    return NextResponse.json({ message: "Post not found" }, { status: 404 });
+  }
+
+  if (post.userId !== userId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
+  }
+
+  await database.post.delete({
+    where: {
+      id: postId
+    }
+  });
+
+  return NextResponse.json(post, { status: 200 });
 }
