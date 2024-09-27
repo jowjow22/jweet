@@ -65,6 +65,7 @@ export function PostForm({
     toast({
       title: "Postado com sucesso!",
       description: "Seu post foi publicado com sucesso.",
+      variant: "success",
     });
   }
 

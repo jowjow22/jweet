@@ -93,8 +93,11 @@ model Post {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   comments   Comment[]
-  childPostId String? @unique @map("child_post_id")
-  childPost Post?    @relation("ChildPost", fields: [childPostId], references: [id])
-  parentPost Post?    @relation("ChildPost")
+  childPostId String?  @map("child_post_id")
+  childPost Post?  @relation("ChildPost", fields: [childPostId], references: [id])
+  parentPostId String? @map("parent_post_id")
+  parentPost Post? @relation("ParentPost", fields: [parentPostId], references: [id])
+  childPosts Post[] @relation("ChildPost")
   @@map("posts")
+  Post Post[] @relation("ParentPost")
 }

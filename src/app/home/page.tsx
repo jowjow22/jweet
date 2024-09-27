@@ -20,9 +20,15 @@ export default function Home() {
     addNewPost(returnedPost);
   };
 
+  useEffect(() => {
+    if(posts.length !== 0){
+      window.scrollTo(0, 0);
+    }
+  }
+  , [posts]);
+
   const fetchPosts = useCallback(async () => {
     const posts = await getPosts();
-    console.log(posts);
     setPosts(posts);
   }, [setPosts]);
 

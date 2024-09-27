@@ -28,7 +28,7 @@ export const createPostStore = (
       }))},
     setPosts: (_posts: Post[]) => {
       set((state) => ({
-        posts: [...state.posts, ..._posts],
+        posts: Array.from(new Map([...state.posts, ..._posts].map((post) => [post.id, post])).values()),
       }))
     },
     updatePostLikes: (_postId: string, _add: boolean) => {

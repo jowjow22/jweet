@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
         childPost: {
           connect: rest.child_post_id ? { id: rest.child_post_id } : undefined,
         },
+        parentPost: {
+          connect: rest.parent_post_id ? { id: rest.parent_post_id } : undefined,
+        },
         user: {
           connect: {
             id: user_id,

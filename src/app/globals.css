@@ -62,6 +62,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 @layer base {
@@ -70,6 +71,5 @@
   }
   body {
     @apply bg-background text-foreground;
-    scroll-behavior: smooth;
   }
 }

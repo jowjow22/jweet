@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "jose": "^5.9.2",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.441.0",
     "next": "14.2.12",
     "next-auth": "^4.24.7",
@@ -43,6 +44,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

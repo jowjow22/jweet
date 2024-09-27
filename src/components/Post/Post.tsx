@@ -23,7 +23,6 @@ import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
 import { useRouter } from "next/navigation";
 import { RepostMenu } from "./components/RepostMenu";
-
 import { Repeat } from "lucide-react";
 
 interface IPostProps {
@@ -139,7 +138,9 @@ export const Post = ({
                 />
                 {likes}
               </Button>
-              <RepostMenu post={post} />
+              <RepostMenu post={
+                post.content ? post : post.childPost!
+              } />
               <Conditional condition={!isComment}>
                 <Conditional.If>
                   <Button

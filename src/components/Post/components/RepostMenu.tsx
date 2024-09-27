@@ -25,6 +25,8 @@ import {
 import { Repeat, Pen } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
+import  debounce  from "lodash.debounce";
+import { useToast } from "@/hooks/use-toast";
 
 interface IRepostMenuProps {
   post: PostType;
@@ -33,6 +35,7 @@ interface IRepostMenuProps {
 export const RepostMenu = ({ post }: IRepostMenuProps) => {
   const [repostModalOpen, setRepostModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { toast } = useToast();
 
   const { addNewPost } = usePostStore((state) => state);
 
@@ -65,10 +68,20 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
 
     const returnedPost = postSchema.parse(newPost);
     addNewPost(returnedPost);
-    setMenuOpen(false);
   }
 
-  return (
+  const handleRepost = async () => {
+    setMenuOpen(false);
+    const debouncedRepost = debounce(repostWithoutComment, 1000);
+    debouncedRepost();
+    toast({
+      title: "Postado com sucesso!",
+      description: "Seu post foi publicado com sucesso.",
+      variant: "success",
+    });
+  }
+
+    return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
@@ -101,7 +114,7 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
           <Button variant="outline" className="w-full" onClick={
             (e) => {
               e.preventDefault();
-              repostWithoutComment();
+              handleRepost();
             }
           }>
             <Repeat className="h-4 w-4 mr-2" />
