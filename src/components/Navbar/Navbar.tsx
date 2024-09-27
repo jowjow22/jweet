@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { ListRenderer } from "../utils/ListRenderer/ListRenderer";
 import { Home, Edit } from "lucide-react";
@@ -17,13 +17,14 @@ import { Separator } from "../ui/separator";
 import { ThemeSwitcher } from "./ThemeSwitcher/ThemeSwitcher";
 import { User } from "@/models/User";
 import Link from "next/link";
+import Image from 'next/image'
+import JweetLogo from "@/assets/jweet-logo.svg";
 
 interface NavbarProps {
   user: User;
 }
 
 export const Navbar = ({ user }: NavbarProps) => {
-
   const links = [
     {
       title: "Home",
@@ -31,7 +32,12 @@ export const Navbar = ({ user }: NavbarProps) => {
       variant: "default",
       href: "/",
     },
-    { title: "Alterar dados", icon: Edit, variant: "default", href: "/user/update" },
+    {
+      title: "Alterar dados",
+      icon: Edit,
+      variant: "default",
+      href: "/user/update",
+    },
   ];
 
   return (
@@ -39,14 +45,25 @@ export const Navbar = ({ user }: NavbarProps) => {
       <nav className="flex items-center justify-between p-5">
         <SheetTrigger>
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.image ?? ''} />
-            <AvatarFallback>{
-              user.name?.split(" ").map((name) => name[0]).join("")
-            }</AvatarFallback>
+            <AvatarImage src={user.image ?? ""} />
+            <AvatarFallback>
+              {user.name
+                ?.split(" ")
+                .map((name) => name[0])
+                .join("")}
+            </AvatarFallback>
           </Avatar>
         </SheetTrigger>
-
-        <Link href="/home" className="text-md font-bold">Jweet</Link>
+        <Link href="/home" className="text-md font-bold flex gap-x-1">
+          <Image
+            src={JweetLogo}
+            alt="Google Logo"
+            width={20}
+            height={20}
+            className="mr-2"
+          />
+          Jweet
+        </Link>
         <ThemeSwitcher />
       </nav>
       <Separator />
@@ -59,13 +76,16 @@ export const Navbar = ({ user }: NavbarProps) => {
               "overflow-hidden",
               "rounded-full",
               "bg-muted",
-              "flex items-center justify-center",
+              "flex items-center justify-center"
             )}
           >
-            <AvatarImage src={user.image ?? ''} />
-            <AvatarFallback>{
-              user.name?.split(" ").map((name) => name[0]).join("")
-            }</AvatarFallback>
+            <AvatarImage src={user.image ?? ""} />
+            <AvatarFallback>
+              {user.name
+                ?.split(" ")
+                .map((name) => name[0])
+                .join("")}
+            </AvatarFallback>
           </Avatar>
           <SheetTitle>{user.name}</SheetTitle>
           <ul className="flex gap-x-2 text-sm font-thin">
