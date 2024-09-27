@@ -25,7 +25,6 @@ import {
 import { Repeat, Pen } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { userForPost } from "@/models/User";
-import  debounce  from "lodash.debounce";
 import { useToast } from "@/hooks/use-toast";
 
 interface IRepostMenuProps {
@@ -35,6 +34,7 @@ interface IRepostMenuProps {
 export const RepostMenu = ({ post }: IRepostMenuProps) => {
   const [repostModalOpen, setRepostModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { toast } = useToast();
 
   const { addNewPost } = usePostStore((state) => state);
@@ -71,15 +71,20 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
   }
 
   const handleRepost = async () => {
-    setMenuOpen(false);
-    const debouncedRepost = debounce(repostWithoutComment, 1000);
-    debouncedRepost();
+    setIsButtonDisabled(true);
+    
+    await repostWithoutComment();
+
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 2000);
+
     toast({
       title: "Postado com sucesso!",
       description: "Seu post foi publicado com sucesso.",
       variant: "success",
     });
-  }
+  };
 
     return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
@@ -111,12 +116,17 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
           </DialogContent>
         </Dialog>
         <DropdownMenuItem className="p-0">
-          <Button variant="outline" className="w-full" onClick={
-            (e) => {
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={(e) => {
               e.preventDefault();
-              handleRepost();
-            }
-          }>
+              if (!isButtonDisabled) {
+                handleRepost();
+              }
+            }}
+            disabled={isButtonDisabled}
+          >
             <Repeat className="h-4 w-4 mr-2" />
             Repostar
           </Button>
