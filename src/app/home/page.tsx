@@ -25,7 +25,7 @@ export default function Home() {
       window.scrollTo(0, 0);
     }
   }
-  , [posts]);
+  , [posts.length]);
 
   const fetchPosts = useCallback(async () => {
     const posts = await getPosts();

@@ -84,6 +84,7 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
       description: "Seu post foi publicado com sucesso.",
       variant: "success",
     });
+    setMenuOpen(false);
   };
 
     return (
