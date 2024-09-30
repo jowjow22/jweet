@@ -52,6 +52,7 @@ export async function GET(
   if (post !== null) {
     const liked = post.likes.length > 0
     Object.assign(post, { liked })
+
     return NextResponse.json(post, { status: 200 });
   }
 

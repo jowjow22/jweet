@@ -9,8 +9,8 @@ export type PostActions = {
   addNewPost: (_post: Post) => void
   removePost: (_postId: string) => void
   setPosts: (_posts: Post[]) => void
-  updateRepostState: (_postId: string, _isReposted: boolean) => void
   updatePostLikes: (_postId: string, _add: boolean) => void
+  updatePostObject: (_post: Post) => void
 }
 
 export type PostStore = PostState & PostActions
@@ -38,14 +38,11 @@ export const createPostStore = (
         posts: state.posts.filter((post) => post.id !== _postId),
       }))
     },
-    updateRepostState: (_postId: string, _isReposted: boolean) => {
+    updatePostObject: (_post: Post) => {
       set((state) => ({
         posts: state.posts.map((post) => {
-          if (post.id === _postId) {
-            return {
-              ...post,
-              reposted: _isReposted,
-            }
+          if (post.id === _post.id) {
+            return _post
           }
           return post
         }),

@@ -94,9 +94,9 @@ model Post {
   updatedAt DateTime @updatedAt @map("updated_at")
   comments   Comment[]
   childPostId String?  @map("child_post_id")
-  childPost Post?  @relation("ChildPost", fields: [childPostId], references: [id])
+  childPost Post?  @relation("ChildPost", fields: [childPostId], references: [id], onDelete: Cascade)
   parentPostId String? @map("parent_post_id")
-  parentPost Post? @relation("ParentPost", fields: [parentPostId], references: [id])
+  parentPost Post? @relation("ParentPost", fields: [parentPostId], references: [id], onDelete: Cascade)
   childPosts Post[] @relation("ChildPost")
   @@map("posts")
   Post Post[] @relation("ParentPost")

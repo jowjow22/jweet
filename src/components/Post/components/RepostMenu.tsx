@@ -37,7 +37,9 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { toast } = useToast();
 
-  const { addNewPost, removePost, updateRepostState } = usePostStore((state) => state);
+  const { addNewPost, removePost, updatePostObject } = usePostStore(
+    (state) => state
+  );
 
   const { data: session } = useSession();
 
@@ -70,7 +72,11 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
 
     const returnedPost = postSchema.parse(newPost);
     addNewPost(returnedPost);
-    updateRepostState(post.id, true);
+    updatePostObject({
+      ...post,
+      parentPostId: returnedPost.id,
+      reposted: true,
+    });
   };
 
   const handleRepost = async () => {
@@ -92,9 +98,12 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
   const undoRepost = async () => {
     setIsButtonDisabled(true);
 
-    await deletePost(user.id, post.id);
-
-    removePost(post.id);
+    await deletePost(user.id, post.parentPostId!);
+    updatePostObject({
+      ...post,
+      reposted: false,
+    });
+    removePost(post.parentPostId!);
 
     setTimeout(() => {
       setIsButtonDisabled(false);
@@ -107,8 +116,6 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
       description: "Seu post foi desfeito com sucesso.",
       variant: "success",
     });
-
-    updateRepostState(post.childPostId!, false);
   };
 
   return (
