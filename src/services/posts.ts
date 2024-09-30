@@ -49,3 +49,12 @@ export const removeLike = async (userId: string, postId: string) => {
     console.error(error);
   }
 }
+
+export const deletePost = async (userId: string, postId: string) => {
+  try {
+    const response = await service.delete(`/posts/${userId}/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -24,6 +24,11 @@ export async function GET(
           },
         },
       },
+      parentPost: {
+          where: {
+            userId: userId,
+          },
+      },
       user: {
         select: {
           id: true,
@@ -48,8 +53,10 @@ export async function GET(
   });
 
   posts.forEach(post => {
+    const reposted = !!post.parentPost
     const liked = post.likes.length > 0
     Object.assign(post, { liked })
+    Object.assign(post, { reposted })
   })
 
   return NextResponse.json(posts, { status: 200 });

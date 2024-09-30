@@ -16,6 +16,7 @@ const basePostSchema = z.object({
     likes: z.number(),
   }),
   liked: z.boolean().optional(),
+  reposted: z.boolean().optional(),
 });
 
 export const postCreationSchema = z.object({

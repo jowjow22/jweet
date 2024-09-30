@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { usePostStore } from "@/providers/use-posts-store-provider";
-import { createPost } from "@/services/posts";
+import { createPost, deletePost } from "@/services/posts";
 import {
   postSchema,
   Post as PostType,
@@ -37,7 +37,7 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { toast } = useToast();
 
-  const { addNewPost } = usePostStore((state) => state);
+  const { addNewPost, removePost, updateRepostState } = usePostStore((state) => state);
 
   const { data: session } = useSession();
 
@@ -47,9 +47,11 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
 
   const user = userForPost.parse(session?.user);
 
+  const shouldUndoRepost =
+    post.reposted || (post.content === "" && post.user.id == user.id);
+
   const submitHandler = async (repost: PostCreationType) => {
     const newPost = await createPost(repost);
-   
 
     const returnedPost = postSchema.parse(newPost);
     addNewPost(returnedPost);
@@ -62,35 +64,60 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
       content: "",
       user_id: user.id,
       child_post_id: post.id,
-    }
+    };
 
     const newPost = await createPost(repost);
 
     const returnedPost = postSchema.parse(newPost);
     addNewPost(returnedPost);
-  }
+    updateRepostState(post.id, true);
+  };
 
   const handleRepost = async () => {
     setIsButtonDisabled(true);
-    
+
     await repostWithoutComment();
 
+    setMenuOpen(false);
     setTimeout(() => {
       setIsButtonDisabled(false);
     }, 2000);
-
     toast({
       title: "Postado com sucesso!",
       description: "Seu post foi publicado com sucesso.",
       variant: "success",
     });
-    setMenuOpen(false);
   };
 
-    return (
+  const undoRepost = async () => {
+    setIsButtonDisabled(true);
+
+    await deletePost(user.id, post.id);
+
+    removePost(post.id);
+
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 2000);
+
+    setMenuOpen(false);
+
+    toast({
+      title: "Desfeito com sucesso!",
+      description: "Seu post foi desfeito com sucesso.",
+      variant: "success",
+    });
+
+    updateRepostState(post.childPostId!, false);
+  };
+
+  return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button
+          size="icon"
+          variant={shouldUndoRepost ? "destructive" : "outline"}
+        >
           <Repeat className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -98,7 +125,8 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
         <Dialog open={repostModalOpen} onOpenChange={setRepostModalOpen}>
           <DialogTrigger asChild onClick={() => setRepostModalOpen(true)}>
             <DropdownMenuItem asChild>
-              <Button variant="outline"
+              <Button
+                variant="outline"
                 onClick={(e) => {
                   e.preventDefault();
                 }}
@@ -118,18 +146,20 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
         </Dialog>
         <DropdownMenuItem className="p-0">
           <Button
-            variant="outline"
+            variant={shouldUndoRepost ? "destructive" : "outline"}
             className="w-full"
             onClick={(e) => {
               e.preventDefault();
-              if (!isButtonDisabled) {
+              if (!isButtonDisabled && !shouldUndoRepost) {
                 handleRepost();
+                return;
               }
+              undoRepost();
             }}
             disabled={isButtonDisabled}
           >
             <Repeat className="h-4 w-4 mr-2" />
-            Repostar
+            {shouldUndoRepost ? "Desfazer" : "Repostar"}
           </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>

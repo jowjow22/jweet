@@ -97,11 +97,11 @@ export const Post = ({
         }}
         className="cursor-pointer"
       >
-        <CardContent className={
-          cn({
+        <CardContent
+          className={cn({
             "px-0": !post.content,
-          })
-        }>
+          })}
+        >
           {post.childPostId && post.childPost ? (
             <>
               <CardDescription className="mb-4">{post.content}</CardDescription>
@@ -138,9 +138,7 @@ export const Post = ({
                 />
                 {likes}
               </Button>
-              <RepostMenu post={
-                post.content ? post : post.childPost!
-              } />
+              <RepostMenu post={post} />
               <Conditional condition={!isComment}>
                 <Conditional.If>
                   <Button

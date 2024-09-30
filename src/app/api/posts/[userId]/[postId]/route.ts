@@ -77,6 +77,23 @@ export async function DELETE(
     return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
+  if (post.childPostId !== null) {
+    await database.post.update({
+      where: {
+        id: post.childPostId
+      },
+      data: {
+        parentPostId: null
+      }
+    });
+  }
+
+  await database.like.deleteMany({
+    where: {
+      postId: postId
+    }
+  });
+
   await database.post.delete({
     where: {
       id: postId
