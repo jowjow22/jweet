@@ -148,7 +148,7 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
             <DialogDescription>
               Você deseja repostar esse post?
             </DialogDescription>
-            <PostForm postForRepost={post} submitHandler={submitHandler} />
+            <PostForm postForRepost={post.content ? post : post.childPost!} submitHandler={submitHandler} />
           </DialogContent>
         </Dialog>
         <DropdownMenuItem className="p-0">
