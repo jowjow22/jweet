@@ -97,13 +97,17 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
 
   const undoRepost = async () => {
     setIsButtonDisabled(true);
-
-    await deletePost(user.id, post.parentPostId!);
+    if (post.parentPostId) {
+      await deletePost(user.id, post.parentPostId);
+      removePost(post.parentPostId);
+    } else {
+      await deletePost(user.id, post.id);
+      removePost(post.id);
+    }
     updatePostObject({
       ...post,
       reposted: false,
     });
-    removePost(post.parentPostId!);
 
     setTimeout(() => {
       setIsButtonDisabled(false);
@@ -148,7 +152,10 @@ export const RepostMenu = ({ post }: IRepostMenuProps) => {
             <DialogDescription>
               Você deseja repostar esse post?
             </DialogDescription>
-            <PostForm postForRepost={post.content ? post : post.childPost!} submitHandler={submitHandler} />
+            <PostForm
+              postForRepost={post.content ? post : post.childPost!}
+              submitHandler={submitHandler}
+            />
           </DialogContent>
         </Dialog>
         <DropdownMenuItem className="p-0">
