@@ -12,8 +12,8 @@ const likeSchema = z.object({
   id: z.string(),
   userId: z.string(),
   postId: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export { likeSchema };

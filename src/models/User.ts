@@ -13,7 +13,7 @@ const baseUserCreationSchema = z.object({
 
 const baseUserSchema = z.object({
   id: z.string(),
-  email: z.string(),
+  email: z.string().nullable(),
   name: z.string().nullable(),
   image: z.string().nullable(),
   createdAt: z.union([z.string(), z.date()]).optional(),
@@ -33,7 +33,7 @@ export type User = z.infer<typeof baseUserSchema> & {
 
 const userSchema: z.ZodType<User> = baseUserSchema.extend({
   posts: z.lazy(() => z.array(postSchema)).default([]),
-  likes: z.lazy(() => z.array(likeSchema)).default([]),
+  likes: z.lazy(() => z.array(likeSchema)).default([]).optional(),
 })
 
 export { userSchema, baseUserCreationSchema }

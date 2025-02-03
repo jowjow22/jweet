@@ -29,6 +29,7 @@ export default function Home() {
 
   const fetchPosts = useCallback(async () => {
     const posts = await getPosts();
+    console.log(posts);
     setPosts(posts);
   }, [setPosts]);
 
